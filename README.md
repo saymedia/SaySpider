@@ -11,9 +11,9 @@ Installion
 ----------
 It is recommended that when installing SaySpider for local execution, a [VirtualEnv](http://virtualenv.readthedocs.org/en/latest/) is used.
 
-	> virtualenv env
-	> source env/bin/activate
-	> pip install -r requirements.txt
+    > virtualenv env
+    > source env/bin/activate
+    > pip install -r requirements.txt
 
 Running
 -------
@@ -21,8 +21,21 @@ TODO
 
 CLI Options
 -----------
-TODO
+    usage: run_crawler.py [-h] [--since SINCE] [--job JOB] [--file FILE] URL
 
-SEO Linting RUles
+    Run the Say crawler.
+
+    positional arguments:
+      URL            the url to process.
+
+    optional arguments:
+      -h, --help     show this help message and exit
+      --since SINCE  a W3C (eg, 2000-01-01T00:00:00) formatted date and time that
+                     represents the UTC date time to process urls since.
+      --job JOB      the ID of a job to resume.
+      --file FILE    the path to a file containing a list of urls (one per line)
+                     to process.
+
+SEO Linting Rules
 -----------------
 TODO
