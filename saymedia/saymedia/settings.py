@@ -15,8 +15,13 @@ NEWSPIDER_MODULE = 'saymedia.spiders'
 ROBOTSTXT_OBEY = True
 
 DOWNLOADER_MIDDLEWARES = {
-    'saymedia.middleware.MysqlDownloaderMiddleware': 0,
+    'saymedia.middleware.MysqlDownloaderMiddleware': 1,
     'saymedia.middleware.TimerDownloaderMiddleware': 999,
+    # 'saymedia.middleware.ErrorConverterMiddleware': 999,
+}
+
+SPIDER_MIDDLEWARES = {
+    'scrapy.contrib.spidermiddleware.httperror.HttpErrorMiddleware': None,
 }
 
 ITEM_PIPELINES = {
@@ -30,3 +35,5 @@ DATABASE = {
     'USER': 'seo',
     'PASS': 'oes',
 }
+
+FIREBASE_URL = "https://incandescent-torch-9049.firebaseio.com"

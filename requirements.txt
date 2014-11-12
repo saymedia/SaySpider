@@ -1,4 +1,5 @@
 scrapy>=0.24.4
 mysql-python
-python-firebase
+# python-firebase
+-e git://github.com/mikexstudios/python-firebase.git#egg=python-firebase
 -e git://github.com/saymedia/seosuite.git#egg=seosuite

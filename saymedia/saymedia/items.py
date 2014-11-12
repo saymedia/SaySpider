@@ -37,8 +37,7 @@ class Location(scrapy.Item):
             kwargs['encoding'] = response.encoding if hasattr(response, 'encoding') else None
             kwargs['content_type'] = response.headers.get('Content-Type')
             kwargs['address_length'] = len(response.url)
-            # kwargs['response_time']
-            log.msg('%s %s' % (response.request.method, response.meta.get('response_time')))
+            kwargs['response_time'] = response.meta.get('response_time')
             kwargs['size'] = response.headers.get('Content-Length')
             super(Location, self).__init__(**kwargs)
         else:

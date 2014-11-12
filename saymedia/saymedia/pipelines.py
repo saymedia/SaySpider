@@ -14,14 +14,16 @@ class DatabaseWriterPipeline(object):
     def process_item(self, item, spider):
 
         if isinstance(item, Page):
-            # Write item to page table
+            # Upsert item to page table
 
-            # Write any links to the linking table
+            # Upsert any links to the linking table
+
+            # Delete any links that are no longer on the source url
 
             pass
 
         elif isinstance(item, Asset):
-            # Write item to asset table
+            # Upsert item to asset table
             pass
 
 

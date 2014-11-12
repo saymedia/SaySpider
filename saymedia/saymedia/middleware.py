@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from scrapy import log
+from scrapy.http import Response
 
 class MysqlDownloaderMiddleware(object):
 
@@ -29,3 +30,10 @@ class TimerDownloaderMiddleware(object):
         start = datetime.strptime(request.meta.get('request_start'), "%Y-%m-%dT%H:%M:%S.%f %Z")
         request.meta['response_time'] = (end - start).total_seconds()
         return response
+
+
+class OriginUrlMiddleware(object):
+
+    def process_request(self, request, spider):
+        if hasattr(spider, 'get_origin_url'):
+            request.meta['origin_url'] = spider.get_origin_url()

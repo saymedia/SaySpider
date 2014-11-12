@@ -19,7 +19,7 @@ from saymedia.linkextractors import SayLinkExtractor
 
 class SaySpider(SaySitemapSpider):
     name = "say_spider"
-    sitemap_modified_since = datetime(2014, 11, 11)
+    sitemap_modified_since = False
 
     valid_link_tags = ('a', 'script', 'phx-script', 'img', 'link',)
     valid_link_attrs = ('href', 'src',)
@@ -35,7 +35,9 @@ class SaySpider(SaySitemapSpider):
         self.sitemap_urls = [url]
 
         # Only process pages modified since date
-        # self.sitemap_modified_since = kwargs.get('since', False)
+        self.sitemap_modified_since = kwargs.get('since', False)
+        if self.sitemap_modified_since:
+            log.msg('Sicne: %s' % self.sitemap_modified_since.strftime('%Y-%m-%dT%H:%M:%S'))
 
         self.link_extractor = SayLinkExtractor(tags=self.valid_link_tags,
             attrs=self.valid_link_attrs, deny_extensions=())
@@ -57,11 +59,12 @@ class SaySpider(SaySitemapSpider):
         return res
 
     def handle_error_response(self, error):
-        log.msg('%s' % error.value)
         if hasattr(error.value, 'response'):
             self.parse(error.value.response)
-        else:
-            log.msg('Skipping %s' % error.request.url)
+
+
+    def get_origin_url(self):
+        return self.url
 
     def _get_details(self, response):
         if isinstance(response.request, AssetRequest):
@@ -93,12 +96,10 @@ class SaySpider(SaySitemapSpider):
                     method = 'HEAD' if self.sitemap_modified_since != False or \
                         self._is_external(link.url) else 'GET'
                     res.append(PageRequest(link.url, callback=self.parse, method=method, errback=self.handle_error_response,
-                        meta={'external': self._is_external(link.url)}))
+                        meta={'external': self._is_external(link.url), 'source_url': response.url}))
                 elif isinstance(link, AssetLink):
                     res.append(AssetRequest(link.url, callback=self.parse, errback=self.handle_error_response,
-                        meta={'external': self._is_external(link.url)}))
-                else:
-                    res.append(Request(link.url, callback=self.parse, errback=self.handle_error_response))
+                        meta={'external': self._is_external(link.url), 'source_url': response.url}))
 
         return res
 
