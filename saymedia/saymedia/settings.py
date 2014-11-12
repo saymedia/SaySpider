@@ -37,3 +37,9 @@ DATABASE = {
 }
 
 FIREBASE_URL = "YOUR_FIREBASE_URL"
+
+try:
+    # Only used in development environments
+    from .local_settings import *
+except ImportError:
+    pass

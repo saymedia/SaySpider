@@ -57,3 +57,5 @@ target/
 # SaySpider
 jobs/
 saymedia/jobs/
+
+local_settings.py
