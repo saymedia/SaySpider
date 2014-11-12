@@ -32,8 +32,8 @@ ITEM_PIPELINES = {
 USER_AGENT = 'SEO Spider (+http://www.saymedia.com)'
 
 DATABASE = {
-    'USER': 'seo',
-    'PASS': 'oes',
+    'USER': 'YOUR_DATABASE_USER',
+    'PASS': 'YOUR_DATABASE_PASS',
 }
 
-FIREBASE_URL = "https://incandescent-torch-9049.firebaseio.com"
+FIREBASE_URL = "YOUR_FIREBASE_URL"
