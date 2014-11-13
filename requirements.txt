@@ -1,3 +1,4 @@
+Twisted
 scrapy>=0.24.4
 mysql-python
 # python-firebase

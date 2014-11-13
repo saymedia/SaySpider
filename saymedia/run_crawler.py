@@ -3,6 +3,7 @@ import sys
 import uuid
 import argparse
 from datetime import datetime
+from urlparse import urlparse
 
 from twisted.internet import reactor
 from scrapy.crawler import Crawler
@@ -39,9 +40,18 @@ log.msg('Job ID: %s' % job_id)
 spider = SaySpider(url=args.url, since=since)
 settings = get_project_settings()
 
-fire = Firebase('%s/jobs/%s' % (settings.get('FIREBASE_URL'), job_id))
+hostname = 'none'
+if args.url:
+    url_parts = urlparse(args.url)
+    hostname = url_parts.hostname.replace('.', '_')
+elif args.file:
+    # load the urls
+    pass
 
-@Throttle(3)
+log.msg('%s/jobs/%s/%s' % (settings.get('FIREBASE_URL'), hostname, job_id))
+fire = Firebase('%s/jobs/%s/%s' % (settings.get('FIREBASE_URL'), hostname, job_id))
+
+@Throttle(5)
 def post_stats(stats):
     p = int(stats.get('processed'))
     q = int(stats.get('queued'))
@@ -61,18 +71,17 @@ def item_scraped(item, response, spider):
     post_stats(s)
 
 def engine_started():
-    fire.update({'s': 'running'})
-
-is_complete = False
-def engine_stopped():
-    global is_complete
-    fire.update({'s': 'complete'})
-    is_complete = True
+    if fire:
+        fire.update({
+            's': 'running',
+            't': datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S"),
+            'p': 0,
+            'q': 0
+        })
 
 def process_complete():
-    global is_complete
-    if not is_complete:
-        fire.update({'s': 'cancelled'})
+    if fire:
+        fire.delete()
 
 atexit.register(process_complete)
 
@@ -83,7 +92,7 @@ crawler = Crawler(settings)
 crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
 crawler.signals.connect(item_scraped, signal=signals.item_scraped)
 crawler.signals.connect(engine_started, signal=signals.engine_started)
-crawler.signals.connect(engine_stopped, signal=signals.engine_stopped)
+# crawler.signals.connect(engine_stopped, signal=signals.engine_stopped)
 
 crawler.configure()
 crawler.crawl(spider)
