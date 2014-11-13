@@ -32,8 +32,9 @@ class TimerDownloaderMiddleware(object):
         return response
 
 
-class OriginUrlMiddleware(object):
+class OriginHostMiddleware(object):
 
     def process_request(self, request, spider):
-        if hasattr(spider, 'get_origin_url'):
-            request.meta['origin_url'] = spider.get_origin_url()
+        if hasattr(spider, 'get_origin_host'):
+            request.meta['origin_host'] = spider.get_origin_host()
+

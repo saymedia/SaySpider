@@ -16,6 +16,7 @@ ROBOTSTXT_OBEY = True
 
 DOWNLOADER_MIDDLEWARES = {
     'saymedia.middleware.MysqlDownloaderMiddleware': 1,
+    'saymedia.middleware.OriginHostMiddleware': 2,
     'saymedia.middleware.TimerDownloaderMiddleware': 999,
     # 'saymedia.middleware.ErrorConverterMiddleware': 999,
 }

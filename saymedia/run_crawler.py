@@ -36,20 +36,17 @@ if args.since:
 log.start()
 log.msg('Job ID: %s' % job_id)
 
-
-spider = SaySpider(url=args.url, since=since)
 settings = get_project_settings()
 
-hostname = 'none'
+hostname = None
 if args.url:
     url_parts = urlparse(args.url)
     hostname = url_parts.hostname.replace('.', '_')
-elif args.file:
-    # load the urls
-    pass
 
-log.msg('%s/jobs/%s/%s' % (settings.get('FIREBASE_URL'), hostname, job_id))
-fire = Firebase('%s/jobs/%s/%s' % (settings.get('FIREBASE_URL'), hostname, job_id))
+spider = SaySpider(url=args.url, since=since, origin_host=hostname)
+
+log.msg('%s/jobs/%s/%s' % (settings.get('FIREBASE_URL'), hostname or 'none', job_id))
+fire = Firebase('%s/jobs/%s/%s' % (settings.get('FIREBASE_URL'), hostname or 'none', job_id))
 
 @Throttle(5)
 def post_stats(stats):

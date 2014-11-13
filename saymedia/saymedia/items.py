@@ -12,8 +12,9 @@ from scrapy import log
 
 class Location(scrapy.Item):
     level = scrapy.Field()
-    address = scrapy.Field()
-    domain = scrapy.Field()
+    origin_host = scrapy.Field()
+    url = scrapy.Field()
+    host = scrapy.Field()
     path = scrapy.Field()
     external = scrapy.Field()
     status_code = scrapy.Field()
@@ -30,8 +31,9 @@ class Location(scrapy.Item):
             url_parts = urlparse(response.url)
             kwargs['external'] = response.request.meta.get('external', False)
             kwargs['level'] = response.request.meta.get('depth')
-            kwargs['address'] = response.url
-            kwargs['domain'] = url_parts.hostname,
+            kwargs['origin_host'] = response.request.meta.get('origin_host')
+            kwargs['url'] = response.url
+            kwargs['host'] = url_parts.hostname,
             kwargs['path'] = url_parts.path
             kwargs['status_code'] = response.status
             kwargs['encoding'] = response.encoding if hasattr(response, 'encoding') else None

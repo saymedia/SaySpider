@@ -26,18 +26,17 @@ class SaySpider(SaySitemapSpider):
 
     def __init__(self, **kwargs):
         super(SaySpider, self).__init__(**kwargs)
-        url = kwargs.get('url', 'http://readwrite.com/robots.txt')
+        url = kwargs.get('url')
         if not url.startswith('http://') and not url.startswith('https://'):
             url = 'http://%s' % url
         if not url.endswith('/robots.txt'):
             url = '%s/robots.txt' % url
         self.url = url
+        self.origin_host = kwargs.get('origin_host')
         self.sitemap_urls = [url]
 
         # Only process pages modified since date
         self.sitemap_modified_since = kwargs.get('since', False)
-        if self.sitemap_modified_since:
-            log.msg('Sicne: %s' % self.sitemap_modified_since.strftime('%Y-%m-%dT%H:%M:%S'))
 
         self.link_extractor = SayLinkExtractor(tags=self.valid_link_tags,
             attrs=self.valid_link_attrs, deny_extensions=())
@@ -63,8 +62,8 @@ class SaySpider(SaySitemapSpider):
             self.parse(error.value.response)
 
 
-    def get_origin_url(self):
-        return self.url
+    def get_origin_host(self):
+        return self.origin_host
 
     def _get_details(self, response):
         if isinstance(response.request, AssetRequest):
