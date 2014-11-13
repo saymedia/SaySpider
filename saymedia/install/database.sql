@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS `asset`;
 CREATE TABLE `asset` (
   `level` int(11) DEFAULT NULL,
   `origin_host` varchar(255) DEFAULT NULL,
-  `origin_hash` varchar(32) DEFAULT NULL,
+  `origin_hash` varchar(64) DEFAULT NULL,
   `url` varchar(2500) DEFAULT NULL,
-  `url_hash` varchar(32) DEFAULT NULL,
+  `url_hash` varchar(64) DEFAULT NULL,
   `host` varchar(2500) DEFAULT NULL,
   `path` varchar(2500) DEFAULT NULL,
   `external` tinyint(4) DEFAULT NULL,
@@ -34,9 +34,9 @@ DROP TABLE IF EXISTS `page`;
 CREATE TABLE `page` (
   `level` int(11) DEFAULT NULL,
   `origin_host` varchar(255) DEFAULT NULL,
-  `origin_hash` varchar(32) DEFAULT NULL,
+  `origin_hash` varchar(64) DEFAULT NULL,
   `url` varchar(2500) DEFAULT NULL,
-  `url_hash` varchar(32) DEFAULT NULL,
+  `url_hash` varchar(64) DEFAULT NULL,
   `host` varchar(2500) DEFAULT NULL,
   `path` varchar(2500) DEFAULT NULL,
   `external` tinyint(4) DEFAULT NULL,
