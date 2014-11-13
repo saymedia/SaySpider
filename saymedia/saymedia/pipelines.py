@@ -20,40 +20,40 @@ class DatabaseWriterPipeline(object):
     def process_item(self, item, spider):
 
         if isinstance(item, Page):
-            # Upsert item to page table
-            cur = self.db.cursor()
-
-            item_keys = item.keys()
-
-            base_query = """
-INSERT INTO page (
-           `%s`
-      ) VALUES (
-           %s
-      ) ON DUPLICATE KEY
-      UPDATE
-           %s
-            """
-
             links = item.pop('links', [])
-            token_string = "%s," * len(item)
-            query = base_query % ("`, `".join(item.keys()), token_string[:-1],
-                ",".join([key + " = %s" for key in item.keys()]))
-
-            values = item.values()
-            values.extend(item.values())
-
-
-            cur.execute(query, values)
-            self.db.commit()
+            _upsertItem('page', item)
 
             # Upsert any links to the linking table
 
             # Delete any links that are no longer on the source url
 
         elif isinstance(item, Asset):
-            # Upsert item to asset table
-            pass
+            _upsertItem('asset', item)
+
+
+
+    def _upserItem(self, table, item):
+        cur = self.db.cursor()
+
+        # Upsert item to page table
+
+        item_keys = item.keys()
+
+        base_query = """
+INSERT INTO `%s` (`%s`) VALUES (%s) ON DUPLICATE KEY UPDATE %s
+        """
+
+        links = item.pop('links', [])
+        token_string = "%s," * len(item)
+        query = base_query % (table, "`, `".join(item.keys()), token_string[:-1],
+            ",".join([key + " = %s" for key in item.keys()]))
+
+        values = item.values()
+        values.extend(item.values())
+
+
+        cur.execute(query, values)
+        self.db.commit()
 
 
     def open_spider(self, spider):
