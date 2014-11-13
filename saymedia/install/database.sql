@@ -1,7 +1,9 @@
 CREATE TABLE `asset` (
   `level` int(11) DEFAULT NULL,
   `origin_host` varchar(255) DEFAULT NULL,
+  `origin_hash` varchar(32) DEFAULT NULL,
   `url` varchar(2500) DEFAULT NULL,
+  `url_hash` varchar(32) DEFAULT NULL,
   `domain` varchar(2500) DEFAULT NULL,
   `path` varchar(2500) DEFAULT NULL,
   `external` tinyint(4) DEFAULT NULL,
@@ -13,7 +15,9 @@ CREATE TABLE `asset` (
   `response_time` float DEFAULT NULL,
   `redirect_uri` text,
   `timestamp` datetime DEFAULT NULL,
-  `asset_type` varchar(255) DEFAULT NULL
+  `asset_type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`url_hash`),
+  UNIQUE KEY `url_origin` (`url_hash`, `origin_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -27,7 +31,9 @@ CREATE TABLE `links` (
 CREATE TABLE `page` (
   `level` int(11) DEFAULT NULL,
   `origin_host` varchar(255) DEFAULT NULL,
+  `origin_hash` varchar(32) DEFAULT NULL,
   `url` varchar(2500) DEFAULT NULL,
+  `url_hash` varchar(32) DEFAULT NULL,
   `host` varchar(2500) DEFAULT NULL,
   `path` varchar(2500) DEFAULT NULL,
   `external` tinyint(4) DEFAULT NULL,
@@ -63,5 +69,7 @@ CREATE TABLE `page` (
   `lint_error` int(11) DEFAULT NULL,
   `lint_warn` int(11) DEFAULT NULL,
   `lint_info` int(11) DEFAULT NULL,
-  `lint_results` text
+  `lint_results` text,
+  PRIMARY KEY (`url_hash`),
+  UNIQUE KEY `url_origin` (`url_hash`, `origin_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -21,18 +21,18 @@ class DatabaseWriterPipeline(object):
 
         if isinstance(item, Page):
             links = item.pop('links', [])
-            _upsertItem('page', item)
+            self._upsertItem('page', item)
 
             # Upsert any links to the linking table
 
             # Delete any links that are no longer on the source url
 
         elif isinstance(item, Asset):
-            _upsertItem('asset', item)
+            self._upsertItem('asset', item)
 
 
 
-    def _upserItem(self, table, item):
+    def _upsertItem(self, table, item):
         cur = self.db.cursor()
 
         # Upsert item to page table

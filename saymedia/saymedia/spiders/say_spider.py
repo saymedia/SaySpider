@@ -64,6 +64,7 @@ class SaySpider(SaySitemapSpider):
         return self.origin_host
 
     def _get_details(self, response):
+        log.msg('%s' % response.request.meta.get('page_type'))
         if isinstance(response.request, AssetRequest):
             return self._get_asset_details(response)
         else:
@@ -92,10 +93,10 @@ class SaySpider(SaySitemapSpider):
                     method = 'HEAD' if self.sitemap_modified_since != False or \
                         self._is_external(link.url) else 'GET'
                     res.append(PageRequest(link.url, callback=self.parse, method=method, errback=self.handle_error_response,
-                        meta={'external': self._is_external(link.url), 'source_url': response.url}))
+                        meta={'external': self._is_external(link.url), 'source_url': response.url, 'page_type': 'page'}))
                 elif isinstance(link, AssetLink):
                     res.append(AssetRequest(link.url, callback=self.parse, errback=self.handle_error_response,
-                        meta={'external': self._is_external(link.url), 'source_url': response.url}))
+                        meta={'external': self._is_external(link.url), 'source_url': response.url, 'page_type': 'asset'}))
 
         return res
 

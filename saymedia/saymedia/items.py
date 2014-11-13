@@ -6,6 +6,7 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 from urlparse import urlparse
+import hashlib
 import scrapy
 
 from scrapy import log
@@ -13,6 +14,8 @@ from scrapy import log
 class Location(scrapy.Item):
     level = scrapy.Field()
     origin_host = scrapy.Field()
+    origin_hash = scrapy.Field()
+    url_hash = scrapy.Field()
     url = scrapy.Field()
     host = scrapy.Field()
     path = scrapy.Field()
@@ -32,6 +35,8 @@ class Location(scrapy.Item):
             kwargs['external'] = response.request.meta.get('external', False)
             kwargs['level'] = response.request.meta.get('depth')
             kwargs['origin_host'] = response.request.meta.get('origin_host')
+            kwargs['origin_hash'] = hashlib.sha256(kwargs['origin_host']).hexdigest()
+            kwargs['url_hash'] = hashlib.sha256(response.url).hexdigest()
             kwargs['url'] = response.url
             kwargs['host'] = url_parts.hostname,
             kwargs['path'] = url_parts.path
