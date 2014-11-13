@@ -21,6 +21,11 @@ DOWNLOADER_MIDDLEWARES = {
     # 'saymedia.middleware.ErrorConverterMiddleware': 999,
 }
 
+SPIDER_REPORTS = {
+    'xml': 'saymedia.reports.XmlReport',
+    'firebase': 'saymedia.reports.FirebaseReport',
+}
+
 SPIDER_MIDDLEWARES = {
     'scrapy.contrib.spidermiddleware.httperror.HttpErrorMiddleware': None,
 }

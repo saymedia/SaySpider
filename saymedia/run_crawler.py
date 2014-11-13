@@ -8,6 +8,7 @@ from urlparse import urlparse
 from twisted.internet import reactor
 from scrapy.crawler import Crawler
 from scrapy import log, signals
+from scrapy.utils.misc import load_object
 from saymedia.spiders.say_spider import SaySpider
 from scrapy.utils.project import get_project_settings
 
@@ -75,6 +76,22 @@ def engine_started():
             'p': 0,
             'q': 0
         })
+
+def engine_stopped():
+    # Handle any report outout
+    report = None
+    if args.report:
+        r = settings.get('SPIDER_REPORTS').get(args.report)
+        if r:
+            report_cls = load_object(r)
+            if hasattr(report_cls, 'from_crawler'):
+                report = report_cls.from_crawler(crawler)
+            else:
+                report = report_cls()
+
+    if report:
+        report.process(spider)
+
 
 def process_complete():
     if fire:

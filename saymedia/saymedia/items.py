@@ -84,10 +84,12 @@ class Page(Location):
             page['body'] = response.body
 
             title = response.xpath('//title/text()').extract()
+            title = title[0] if len(title) > 0 else ''
             page['page_title'] = title
             page['page_title_length'] = len(title)
 
             description = response.xpath('//meta[@name="description"]/@content').extract()
+            description = description[0] if len(description) > 0 else ''
             page['meta_description'] = description
             page['meta_description_length'] = len(description)
 
@@ -101,21 +103,27 @@ class Page(Location):
                 page['h1_length_2'] = len(h1s[1])
 
             robots = response.xpath('//meta[@name="robots"]/@content').extract()
+            robots = robots[0] if len(robots) > 0 else None
             page['meta_robots'] = robots
 
             rel_next = response.xpath('//link[@rel="next"]/@href')
+            rel_next = rel_next[0] if len(rel_next) > 0 else None
             page['rel_next'] = rel_next
 
             rel_prev = response.xpath('//link[@rel="prev"]/@href')
+            rel_prev = rel_prev[0] if len(rel_prev) > 0 else None
             page['rel_prev'] = rel_prev
 
             content_item_id = response.xpath('//meta[@name="phx:content-item-id"]/@content').extract()
+            content_item_id = content_item_id[0] if len(content_item_id) > 0 else None
             page['content_item_id'] = content_item_id
 
             content_node_id = response.xpath('//meta[@name="phx:content-node-id"]/@content').extract()
+            content_node_id = content_node_id[0] if len(content_node_id) > 0 else None
             page['content_node_id'] = content_node_id
 
             object_type = response.xpath('//meta[@name="phx:object-type"]/@content').extract()
+            object_type = object_type[0] if len(object_type) > 0 else None
             page['object_type'] = object_type
 
         return page
