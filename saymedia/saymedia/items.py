@@ -141,6 +141,12 @@ class Asset(Location):
     def from_response(cls, response):
         asset = cls(response)
 
-        # TODO: set the asset type
+        t = response.headers.get('Content-Type')
+        if 'javascript' in t:
+            asset['asset_type'] = 'script'
+        elif 'css' in t:
+            asset['asset_type'] = 'stylesheet'
+        elif 'image' in t:
+            asset['asset_type'] = 'image'
 
         return asset

@@ -1,10 +1,11 @@
+DROP TABLE IF EXISTS `asset`;
 CREATE TABLE `asset` (
   `level` int(11) DEFAULT NULL,
   `origin_host` varchar(255) DEFAULT NULL,
   `origin_hash` varchar(32) DEFAULT NULL,
   `url` varchar(2500) DEFAULT NULL,
   `url_hash` varchar(32) DEFAULT NULL,
-  `domain` varchar(2500) DEFAULT NULL,
+  `host` varchar(2500) DEFAULT NULL,
   `path` varchar(2500) DEFAULT NULL,
   `external` tinyint(4) DEFAULT NULL,
   `status_code` smallint(6) DEFAULT NULL,
@@ -21,6 +22,7 @@ CREATE TABLE `asset` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `links`;
 CREATE TABLE `links` (
   `from_url` varchar(2500) DEFAULT NULL,
   `to_url` varchar(2500) DEFAULT NULL,
@@ -28,6 +30,7 @@ CREATE TABLE `links` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `page`;
 CREATE TABLE `page` (
   `level` int(11) DEFAULT NULL,
   `origin_host` varchar(255) DEFAULT NULL,

@@ -64,8 +64,7 @@ class SaySpider(SaySitemapSpider):
         return self.origin_host
 
     def _get_details(self, response):
-        log.msg('%s' % response.request.meta.get('page_type'))
-        if isinstance(response.request, AssetRequest):
+        if response.request.meta.get('page_type') == 'asset':
             return self._get_asset_details(response)
         else:
             return self._get_page_details(response)
