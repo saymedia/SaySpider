@@ -22,98 +22,31 @@ class DatabaseWriterPipeline(object):
         if isinstance(item, Page):
             # Upsert item to page table
             cur = self.db.cursor()
-            query = """
+
+            item_keys = item.keys()
+
+            base_query = """
 INSERT INTO page (
-           `level`,
-           `origin_host`,
-           `url`,
-           `host`,
-           `path`,
-           `external`,
-           `status_code`,
-           `size`,
-           `address_length`,
-           `encoding`,
-           `content_type`,
-           `response_time`,
-           `redirect_uri`,
-           `timestamp`,
-           `canonical`,
-           `content_hash`,
-           `body`,
-           `page_title`,
-           `page_title_occurences`,
-           `page_title_length`,
-           `meta_description`,
-           `meta_description_length`,
-           `meta_description_occurences`,
-           `content_item_id`,
-           `content_node_id`,
-           `object_type`,
-           `h1_1`,
-           `h1_length_1`,
-           `h1_2`,
-           `h1_length_2`,
-           `h1_count`,
-           `meta_robots`,
-           `rel_next`,
-           `rel_prev`,
-           `lint_critical`,
-           `lint_error`,
-           `lint_warn`,
-           `lint_info`,
-           `lint_results`
+           `%s`
       ) VALUES (
-           %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+           %s
       ) ON DUPLICATE KEY
       UPDATE
-           `level` = %s,
-           `origin_host` = %s,
-           `url` = %s,
-           `host` = %s,
-           `path` = %s,
-           `external` = %s,
-           `status_code` = %s,
-           `size` = %s,
-           `address_length` = %s,
-           `encoding` = %s,
-           `content_type` = %s,
-           `response_time` = %s,
-           `redirect_uri` = %s,
-           `timestamp` = %s,
-           `canonical` = %s,
-           `content_hash` = %s,
-           `body` = %s,
-           `page_title` = %s,
-           `page_title_occurences` = %s,
-           `page_title_length` = %s,
-           `meta_description` = %s,
-           `meta_description_length` = %s,
-           `meta_description_occurences` = %s,
-           `content_item_id` = %s,
-           `content_node_id` = %s,
-           `object_type` = %s,
-           `h1_1` = %s,
-           `h1_length_1` = %s,
-           `h1_2` = %s,
-           `h1_length_2` = %s,
-           `h1_count` = %s,
-           `meta_robots` = %s,
-           `rel_next` = %s,
-           `rel_prev` = %s,
-           `lint_critical` = %s,
-           `lint_error` = %s,
-           `lint_warn` = %s,
-           `lint_info` = %s,
-           `lint_results = %s`
+           %s
             """
 
             links = item.pop('links', [])
+            token_string = "%s," * len(item)
+            query = base_query % ("`, `".join(item.keys()), token_string[:-1],
+                ",".join([key + " = %s" for key in item.keys()]))
 
             values = item.values()
             values.extend(item.values())
+
+
             cur.execute(query, values)
             self.db.commit()
+
             # Upsert any links to the linking table
 
             # Delete any links that are no longer on the source url

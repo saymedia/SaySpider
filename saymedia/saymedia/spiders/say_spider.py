@@ -53,8 +53,6 @@ class SaySpider(SaySitemapSpider):
             res[0]['links'] = [r.url for r in requests]
             res.extend(requests)
 
-        # inspect_response(response, self)
-        # log.msg(response, level=log.DEBUG, spider=self)
         return res
 
     def handle_error_response(self, error):
@@ -79,7 +77,6 @@ class SaySpider(SaySitemapSpider):
 
             if isinstance(response, HtmlResponse):
                 res = lint_html(response.body)
-                # log.msg('keys: %s' % ", ".join(res.keys()))
 
         return page
 
