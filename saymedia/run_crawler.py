@@ -22,6 +22,7 @@ parser.add_argument('--since', help='a W3C (eg, 2000-01-01T00:00:00) formatted d
     'represents the UTC date time to process urls since.')
 parser.add_argument('--job', help='the ID of a job to resume.')
 parser.add_argument('--file', help='the path to a file containing a list of urls (one per line) to process.')
+parser.add_argument('--report', help='the report handler to run at the end of the job.')
 args = parser.parse_args()
 
 job_id = args.job or uuid.uuid4().hex
@@ -82,6 +83,7 @@ def engine_stopped():
     report = None
     if args.report:
         r = settings.get('SPIDER_REPORTS').get(args.report)
+        log.msg('%s' % r)
         if r:
             report_cls = load_object(r)
             if hasattr(report_cls, 'from_crawler'):
@@ -90,6 +92,7 @@ def engine_stopped():
                 report = report_cls()
 
     if report:
+        log.msg('running report')
         report.process(spider)
 
 
@@ -106,7 +109,7 @@ crawler = Crawler(settings)
 crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
 crawler.signals.connect(item_scraped, signal=signals.item_scraped)
 crawler.signals.connect(engine_started, signal=signals.engine_started)
-# crawler.signals.connect(engine_stopped, signal=signals.engine_stopped)
+crawler.signals.connect(engine_stopped, signal=signals.engine_stopped)
 
 crawler.configure()
 crawler.crawl(spider)

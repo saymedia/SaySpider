@@ -4,3 +4,4 @@ mysql-python
 # python-firebase
 -e git://github.com/mikexstudios/python-firebase.git#egg=python-firebase
 -e git://github.com/saymedia/seosuite.git#egg=seosuite
+cherrypy

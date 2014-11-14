@@ -38,3 +38,7 @@ class OriginHostMiddleware(object):
         if hasattr(spider, 'get_origin_host'):
             request.meta['origin_host'] = spider.get_origin_host()
 
+class ErrorConverterMiddleware(object):
+
+    def process_exception(self, request, exception, spider):
+        return Response(request.url, status=400)

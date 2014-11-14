@@ -15,10 +15,10 @@ NEWSPIDER_MODULE = 'saymedia.spiders'
 ROBOTSTXT_OBEY = True
 
 DOWNLOADER_MIDDLEWARES = {
-    'saymedia.middleware.MysqlDownloaderMiddleware': 1,
+    'saymedia.middleware.ErrorConverterMiddleware': 1,
+    # 'saymedia.middleware.MysqlDownloaderMiddleware': 1,
     'saymedia.middleware.OriginHostMiddleware': 2,
-    'saymedia.middleware.TimerDownloaderMiddleware': 999,
-    # 'saymedia.middleware.ErrorConverterMiddleware': 999,
+    'saymedia.middleware.TimerDownloaderMiddleware': 998,
 }
 
 SPIDER_REPORTS = {

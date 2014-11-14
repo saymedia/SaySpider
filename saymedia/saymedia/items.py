@@ -9,6 +9,7 @@ from urlparse import urlparse
 import hashlib
 import scrapy
 import json
+from datetime import datetime
 
 from seolinter import lint_html
 
@@ -33,6 +34,7 @@ class Location(scrapy.Item):
     content_type = scrapy.Field()
     response_time = scrapy.Field()
     redirect_uri = scrapy.Field()
+    request_method = scrapy.Field()
     timestamp = scrapy.Field()
 
     def __init__(self, response=None, **kwargs):
@@ -52,6 +54,8 @@ class Location(scrapy.Item):
             kwargs['address_length'] = len(response.url)
             kwargs['response_time'] = response.meta.get('response_time')
             kwargs['size'] = response.headers.get('Content-Length')
+            kwargs['request_method'] = response.request.method
+            kwargs['timestamp'] = datetime.utcnow().strftime("%Y%m%d%H%M%S")
             super(Location, self).__init__(**kwargs)
         else:
             super(Location, self).__init__(**kwargs)
@@ -89,7 +93,7 @@ class Page(Location):
     @classmethod
     def from_response(cls, response):
         page = cls(response)
-        if response.request.method != 'HEAD':
+        if response.request.method != 'HEAD' and hasattr(response, 'xpath'):
             # page['content_hash'] = hashlib.sha256(
             #     response.body.encode('ascii', 'ignore')).hexdigest()
             page['body'] = response.body
@@ -133,7 +137,7 @@ class Page(Location):
             content_node_id = content_node_id[0] if len(content_node_id) > 0 else None
             page['content_node_id'] = content_node_id
 
-            object_type = response.xpath('//meta[@name="phx:object-type"]/@content').extract()
+            object_type = response.xpath('//meta[@name="phx:content-object-type"]/@content').extract()
             object_type = object_type[0] if len(object_type) > 0 else None
             page['object_type'] = object_type
 
