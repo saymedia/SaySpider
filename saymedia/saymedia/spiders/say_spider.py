@@ -9,8 +9,6 @@ from scrapy.contrib.spidermiddleware.httperror import HttpError
 from scrapy.shell import inspect_response
 from scrapy.contrib.linkextractors import LinkExtractor
 
-from seolinter import lint_html
-
 from saymedia.spiders.say_sitemap_spider import SaySitemapSpider
 from saymedia.items import Page, Asset
 from saymedia.requests import PageRequest, AssetRequest
@@ -70,15 +68,7 @@ class SaySpider(SaySitemapSpider):
             return self._get_page_details(response)
 
     def _get_page_details(self, response):
-        page = Page.from_response(response)
-
-        if isinstance(response, HtmlResponse) and \
-            response.request.method != 'HEAD':
-
-            if isinstance(response, HtmlResponse):
-                res = lint_html(response.body)
-
-        return page
+        return Page.from_response(response)
 
     def _get_asset_details(self, response):
         return Asset.from_response(response)

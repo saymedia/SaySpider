@@ -8,7 +8,11 @@
 from urlparse import urlparse
 import hashlib
 import scrapy
+import json
 
+from seolinter import lint_html
+
+from scrapy.http import HtmlResponse
 from scrapy import log
 
 class Location(scrapy.Item):
@@ -131,6 +135,19 @@ class Page(Location):
             object_type = object_type[0] if len(object_type) > 0 else None
             page['object_type'] = object_type
 
+            if isinstance(response, HtmlResponse) and \
+                response.request.method != 'HEAD':
+
+                if isinstance(response, HtmlResponse):
+                    res = lint_html(response.body)
+                    lint_keys = res.keys()
+                    page['lint_critical'] = len([l for l in lint_keys if l[0] == 'C'])
+                    page['lint_error'] = len([l for l in lint_keys if l[0] == 'E'])
+                    page['lint_warn'] = len([l for l in lint_keys if l[0] == 'W'])
+                    page['lint_info'] = len([l for l in lint_keys if l[0] == 'I'])
+                    page['lint_results'] = json.dumps(res)
+
+
         return page
 
 
@@ -142,11 +159,12 @@ class Asset(Location):
         asset = cls(response)
 
         t = response.headers.get('Content-Type')
-        if 'javascript' in t:
-            asset['asset_type'] = 'script'
-        elif 'css' in t:
-            asset['asset_type'] = 'stylesheet'
-        elif 'image' in t:
-            asset['asset_type'] = 'image'
+        if t:
+            if 'javascript' in t:
+                asset['asset_type'] = 'script'
+            elif 'css' in t:
+                asset['asset_type'] = 'stylesheet'
+            elif 'image' in t:
+                asset['asset_type'] = 'image'
 
         return asset
