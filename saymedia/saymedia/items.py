@@ -15,6 +15,8 @@ from seolinter import lint_html
 from scrapy.http import HtmlResponse
 from scrapy import log
 
+from saymedia.utils import url_hash
+
 class Location(scrapy.Item):
     level = scrapy.Field()
     origin_host = scrapy.Field()
@@ -39,8 +41,8 @@ class Location(scrapy.Item):
             kwargs['external'] = response.request.meta.get('external', False)
             kwargs['level'] = response.request.meta.get('depth')
             kwargs['origin_host'] = response.request.meta.get('origin_host')
-            kwargs['origin_hash'] = hashlib.sha256(kwargs['origin_host']).hexdigest()
-            kwargs['url_hash'] = hashlib.sha256(response.url).hexdigest()
+            kwargs['origin_hash'] = url_hash(kwargs['origin_host'])
+            kwargs['url_hash'] = url_hash(response.url)
             kwargs['url'] = response.url
             kwargs['host'] = url_parts.hostname,
             kwargs['path'] = url_parts.path

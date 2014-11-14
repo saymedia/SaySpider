@@ -17,16 +17,15 @@ CREATE TABLE `asset` (
   `redirect_uri` text,
   `timestamp` datetime DEFAULT NULL,
   `asset_type` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`url_hash`),
-  UNIQUE KEY `url_origin` (`url_hash`, `origin_hash`)
+  PRIMARY KEY (`url_hash`, `origin_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `links`;
 CREATE TABLE `links` (
-  `from_url` varchar(2500) DEFAULT NULL,
-  `to_url` varchar(2500) DEFAULT NULL,
-  `type` varchar(2500) DEFAULT NULL
+  `from_url_hash` varchar(64) DEFAULT NULL,
+  `to_url_hash` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`from_url_hash`, `to_url_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -73,6 +72,5 @@ CREATE TABLE `page` (
   `lint_warn` int(11) DEFAULT NULL,
   `lint_info` int(11) DEFAULT NULL,
   `lint_results` text,
-  PRIMARY KEY (`url_hash`),
-  UNIQUE KEY `url_origin` (`url_hash`, `origin_hash`)
+  PRIMARY KEY (`url_hash`, `origin_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -1,3 +1,4 @@
+import hashlib
 import time
 
 def Throttle(maxPerSecond):
@@ -13,3 +14,6 @@ def Throttle(maxPerSecond):
 	            return ret
         return rateLimitedFunction
     return decorate
+
+def url_hash(url):
+    return hashlib.sha256(url).hexdigest()

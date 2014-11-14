@@ -1,6 +1,7 @@
 import MySQLdb
 
 from saymedia.items import Page, Asset
+from saymedia.utils import url_hash
 
 from scrapy import log
 
@@ -23,7 +24,12 @@ class DatabaseWriterPipeline(object):
             links = item.pop('links', [])
             self._upsertItem('page', item)
 
-            # Upsert any links to the linking table
+            if len(links) > 0:
+                cur = self.db.cursor()
+                link_query = "REPLACE INTO `links` (`from_url_hash`, `to_url_hash`) VALUES (%s, %s)"
+                for link in links:
+                    cur.execute(link_query, [item['url_hash'], url_hash(link)])
+                self.db.commit()
 
             # Delete any links that are no longer on the source url
 
@@ -39,21 +45,18 @@ class DatabaseWriterPipeline(object):
 
         item_keys = item.keys()
 
-        base_query = """
-INSERT INTO `%s` (`%s`) VALUES (%s) ON DUPLICATE KEY UPDATE %s
-        """
+        base_query = "REPLACE INTO `%s` (`%s`) VALUES (%s)"
 
         links = item.pop('links', [])
         token_string = "%s," * len(item)
-        query = base_query % (table, "`, `".join(item.keys()), token_string[:-1],
-            ",".join([key + " = %s" for key in item.keys()]))
+        query = base_query % (table, "`, `".join(item.keys()), token_string[:-1])
 
         values = item.values()
-        values.extend(item.values())
-
 
         cur.execute(query, values)
+
         self.db.commit()
+
 
 
     def open_spider(self, spider):
