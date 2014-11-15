@@ -46,6 +46,7 @@ SELECT content_item_id
      , lint_error
      , lint_warn
      , lint_info
+     , lint_results
   FROM page
  WHERE request_method = 'GET'
    AND external = 0

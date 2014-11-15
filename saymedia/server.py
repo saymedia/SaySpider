@@ -1,21 +1,16 @@
 import cherrypy
 
-class HelloWorld(object):
-    @cherrypy.expose
-    def index(self):
-        return "Hello world!"
-
 class Crawler(object):
-	exposed = True
+    exposed = True
 
-	def GET(self, id=None):
-		print id
+    # def GET(self, id=None):
+    #     return id
 
-	def POST(self):
-		print "CREATE NEW"
+    def POST(self, url, since=None, report=None):
+        return url, since, report
 
-	def DELETE(self, id):
-		print "Stopping %s" % id
+    def DELETE(self, id):
+        print "Stopping %s" % id
 
 
 if __name__ == '__main__':
